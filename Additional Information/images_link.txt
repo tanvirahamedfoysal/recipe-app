@@ -5,3 +5,10 @@ burger_combo : 'https://res.cloudinary.com/dqaj2you5/image/upload/v1781187708/bu
 chicken : 'https://res.cloudinary.com/dqaj2you5/image/upload/v1781187703/chicken_deilve.png'
 burger : 'https://res.cloudinary.com/dqaj2you5/image/upload/v1781187675/burger_bbuwvo.png'
 steak : 'https://res.cloudinary.com/dqaj2you5/image/upload/v1781187672/steak_ca5fgh.png'
+
+burger_bun : 'https://res.cloudinary.com/dqaj2you5/image/upload/v1781190281/burger_bun_heaprj.jpg'
+meat_patty : 'https://res.cloudinary.com/dqaj2you5/image/upload/v1781190281/meat_patty_sdriww.jpg'
+potato : 'https://res.cloudinary.com/dqaj2you5/image/upload/v1781190281/potato_n1yvap.jpg'
+raw_chicken : 'https://res.cloudinary.com/dqaj2you5/image/upload/v1781190281/raw_chicken_sh2xl9.jpg'
+raw_noodles : 'https://res.cloudinary.com/dqaj2you5/image/upload/v1781190281/raw_noodles_joyxdq.jpg'
+pizza_doe : 'https://res.cloudinary.com/dqaj2you5/image/upload/v1781190282/pizza_doe_yqkfe9.webp'

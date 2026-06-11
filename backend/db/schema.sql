@@ -17,6 +17,7 @@ CREATE TABLE recipe_app.ingredients (
     food_id INT REFERENCES recipe_app.foods(id) ON DELETE CASCADE,
     name VARCHAR(100) NOT NULL,
     quantity FLOAT NOT NULL,
+    unit VARCHAR(20) NOT NULL,
     photo_url VARCHAR(512)
 );
 

@@ -1,0 +1,421 @@
+If you’re using:
+
+* FastAPI
+* PostgreSQL
+* Raw SQL
+* One schema (mega_assignment)
+* One SQL file for all tables
+* No Alembic (for now)
+
+then I’d simplify the structure significantly.
+
+Recommended Structure
+
+backend/
+│
+├── api/
+│   ├── routes/
+│   │   ├── auth.py
+│   │   ├── users.py
+│   │   ├── peripherals.py
+│   │   └── reviews.py
+│   │
+│   └── dependencies.py
+│
+├── core/
+│   ├── config.py
+│   ├── security.py
+│   └── constants.py
+│
+├── db/
+│   ├── database.py
+│   └── schema.sql
+│
+├── crud/
+│   ├── user.py
+│   ├── peripheral.py
+│   └── review.py
+│
+├── services/
+│   ├── auth_service.py
+│   ├── user_service.py
+│   ├── peripheral_service.py
+│   └── review_service.py
+│
+├── schemas/
+│   ├── auth.py
+│   ├── user.py
+│   ├── peripheral.py
+│   └── review.py
+│
+├── tests/
+│
+├── .env
+├── .gitignore
+├── main.py
+├── pyproject.toml
+└── uv.lock
+
+⸻
+
+Root Files
+
+main.py
+
+Application entry point.
+
+Example:
+
+from fastapi import FastAPI
+app = FastAPI()
+
+Responsibilities:
+
+* Create FastAPI app
+* Include routers
+* Startup/shutdown events
+* Middleware
+* Exception handlers
+
+Example:
+
+app.include_router(user_router)
+app.include_router(auth_router)
+
+⸻
+
+.env
+
+Environment variables.
+
+DATABASE_URL=postgresql+asyncpg://postgres:password@localhost/my_projects
+DB_SCHEMA=mega_assignment
+SECRET_KEY=super_secret_key
+
+Never commit this.
+
+⸻
+
+pyproject.toml
+
+Project dependencies.
+
+Example:
+
+fastapi
+uvicorn
+asyncpg
+sqlalchemy
+pydantic-settings
+
+Managed by uv.
+
+⸻
+
+uv.lock
+
+Dependency lock file.
+
+Commit this.
+
+⸻
+
+api/
+
+Contains HTTP layer only.
+
+api/
+├── routes/
+└── dependencies.py
+
+⸻
+
+api/routes/
+
+Each file represents a resource.
+
+routes/
+├── auth.py
+├── users.py
+├── peripherals.py
+└── reviews.py
+
+Example
+
+users.py
+
+@router.get("/{user_id}")
+async def get_user(user_id: int):
+    ...
+
+No SQL here.
+No business logic here.
+
+Only:
+
+* Request parsing
+* Response returning
+* Calling services
+
+⸻
+
+api/dependencies.py
+
+Shared dependencies.
+
+Example:
+
+async def get_current_user():
+    ...
+
+Used like:
+
+Depends(get_current_user)
+
+⸻
+
+core/
+
+Global application utilities.
+
+core/
+├── config.py
+├── security.py
+└── constants.py
+
+⸻
+
+core/config.py
+
+Loads .env.
+
+Example:
+
+settings.database_url
+settings.secret_key
+
+Single source of configuration.
+
+⸻
+
+core/security.py
+
+Authentication utilities.
+
+Examples:
+
+hash_password()
+verify_password()
+create_access_token()
+decode_token()
+
+JWT-related logic lives here.
+
+⸻
+
+core/constants.py
+
+Application constants.
+
+Example:
+
+USER_ROLE_ADMIN = "admin"
+MAX_REVIEW_LENGTH = 5000
+
+Avoid magic numbers throughout the codebase.
+
+⸻
+
+db/
+
+Database layer.
+
+db/
+├── database.py
+└── schema.sql
+
+⸻
+
+db/database.py
+
+Creates connection pool.
+
+Example:
+
+import asyncpg
+pool = await asyncpg.create_pool(...)
+
+Provides:
+
+get_connection()
+
+or
+
+get_pool()
+
+All CRUD modules use this.
+
+⸻
+
+db/schema.sql
+
+Your entire database definition.
+
+Example:
+
+CREATE SCHEMA IF NOT EXISTS mega_assignment;
+CREATE TABLE mega_assignment.users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL
+);
+CREATE TABLE mega_assignment.brands (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+CREATE TABLE mega_assignment.peripherals (
+    id SERIAL PRIMARY KEY,
+    brand_id INTEGER REFERENCES mega_assignment.brands(id)
+);
+
+Whenever you add tables:
+
+ALTER TABLE ...
+
+Update this file.
+
+Since you’re intentionally avoiding migrations, this becomes your master database definition.
+
+⸻
+
+crud/
+
+Raw SQL only.
+
+crud/
+├── user.py
+├── peripheral.py
+└── review.py
+
+⸻
+
+Example
+
+crud/user.py
+
+async def create_user(...):
+    ...
+
+Contains:
+
+INSERT
+SELECT
+UPDATE
+DELETE
+
+Examples:
+
+SELECT *
+FROM mega_assignment.users
+WHERE id = $1
+
+No business logic.
+
+⸻
+
+services/
+
+Business rules.
+
+services/
+├── auth_service.py
+├── user_service.py
+├── peripheral_service.py
+└── review_service.py
+
+⸻
+
+Example
+
+user_service.py
+
+async def register_user(...):
+
+Workflow:
+
+Validate input
+↓
+Check duplicate email
+↓
+Hash password
+↓
+Create user
+
+Calls CRUD functions.
+
+Does not directly talk to FastAPI.
+
+⸻
+
+schemas/
+
+Pydantic models.
+
+schemas/
+├── auth.py
+├── user.py
+├── peripheral.py
+└── review.py
+
+⸻
+
+Example
+
+class UserCreate(BaseModel):
+    username: str
+    email: EmailStr
+
+Request model.
+
+⸻
+
+class UserResponse(BaseModel):
+    id: int
+    username: str
+
+Response model.
+
+⸻
+
+tests/
+
+Later:
+
+tests/
+├── test_auth.py
+├── test_users.py
+└── test_reviews.py
+
+Unit and integration tests.
+
+⸻
+
+Request Flow
+
+When a request arrives:
+
+Client
+  ↓
+api/routes/users.py
+  ↓
+services/user_service.py
+  ↓
+crud/user.py
+  ↓
+db/database.py
+  ↓
+PostgreSQL
+
+This separation is the biggest thing that keeps FastAPI projects maintainable.
+
+For your current stage, this structure is simple, professional, and won’t get in your way while you’re still learning raw SQL and PostgreSQL schemas.

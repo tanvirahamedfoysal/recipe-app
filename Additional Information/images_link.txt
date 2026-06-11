@@ -1,0 +1,7 @@
+app_photo : 'https://res.cloudinary.com/dqaj2you5/image/upload/v1781187428/app_photo_xw2bio.png'
+pizza : 'https://res.cloudinary.com/dqaj2you5/image/upload/v1779555037/delicious-pepperoni-pizza-culinary-delight_632498-24206_i7uve5.avif'
+noodles : 'https://res.cloudinary.com/dqaj2you5/image/upload/v1781187706/noodles_pyim5k.png'
+burger_combo : 'https://res.cloudinary.com/dqaj2you5/image/upload/v1781187708/burger_combo_ahbmbj.png'
+chicken : 'https://res.cloudinary.com/dqaj2you5/image/upload/v1781187703/chicken_deilve.png'
+burger : 'https://res.cloudinary.com/dqaj2you5/image/upload/v1781187675/burger_bbuwvo.png'
+steak : 'https://res.cloudinary.com/dqaj2you5/image/upload/v1781187672/steak_ca5fgh.png'

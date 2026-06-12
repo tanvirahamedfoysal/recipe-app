@@ -1,0 +1,9 @@
+Get all food:
+
+Get details of a specific food:
+
+Get all the food of type(breakfast / lunch / dinner):
+
+Get all the favourite foods:
+
+Swipe favourite status of a food:

@@ -1,9 +1,9 @@
-from core import settings
+from app.core.config import settings
 from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
-    create_async_engine,
     async_sessionmaker,
+    create_async_engine,
 )
 
 
